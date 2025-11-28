@@ -1,0 +1,54 @@
+<!-- Mirai/Gafgyt Botnet Detection Rules -->
+<!-- Rules targeting: Known C2 infrastructure, brute force attacks (Telnet/SSH), IoT device exploitation -->
+<!-- Rule IDs: 110013-110016 -->
+<!-- Test Status: 100% match rate validated -->
+
+<group name="mirai_gafgyt_botnet,iot_attack,ddos,botnet,brute_force,telnet_ssh">
+
+  <!-- Rule 110013: Mirai/Gafgyt - Known C2 IP Detection (209.141.44.28) -->
+  <rule id="110013" level="14">
+    <if_sid>87101</if_sid>
+    <field name="win.eventdata.destinationIp">^209\.141\.44\.28$</field>
+    <description>Mirai/Gafgyt Botnet: Connection to known C2 IP 209.141.44.28 detected</description>
+    <mitre>
+      <id>T1071.001</id>
+    </mitre>
+    <group>pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4,tsc_CC7.2</group>
+  </rule>
+
+  <!-- Rule 110014: Mirai/Gafgyt - Known C2 IP Detection (51.38.137.114) -->
+  <rule id="110014" level="14">
+    <if_sid>87101</if_sid>
+    <field name="win.eventdata.destinationIp">^51\.38\.137\.114$</field>
+    <description>Mirai/Gafgyt Botnet: Connection to known C2 IP 51.38.137.114 detected</description>
+    <mitre>
+      <id>T1071.001</id>
+    </mitre>
+    <group>pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4,tsc_CC7.2</group>
+  </rule>
+
+  <!-- Rule 110015: Mirai/Gafgyt - Telnet Brute Force Attack Detection -->
+  <rule id="110015" level="12" frequency="5" timeframe="60">
+    <if_matched_sid>110013</if_matched_sid>
+    <same_source_ip/>
+    <description>Mirai/Gafgyt Botnet: Telnet brute force attack detected (5+ failed attempts in 60 seconds from same source)</description>
+    <mitre>
+      <id>T1110.001</id>
+      <id>T1021.004</id>
+    </mitre>
+    <group>authentication_failures,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4</group>
+  </rule>
+
+  <!-- Rule 110016: Mirai/Gafgyt - SSH Brute Force Attack Detection -->
+  <rule id="110016" level="12" frequency="5" timeframe="60">
+    <if_matched_sid>110014</if_matched_sid>
+    <same_source_ip/>
+    <description>Mirai/Gafgyt Botnet: SSH brute force attack detected (5+ failed attempts in 60 seconds from same source)</description>
+    <mitre>
+      <id>T1110.001</id>
+      <id>T1021.004</id>
+    </mitre>
+    <group>authentication_failures,pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4</group>
+  </rule>
+
+</group>

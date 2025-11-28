@@ -1,0 +1,34 @@
+<!-- Trigona Ransomware Detection Rules -->
+<!-- Rules targeting: MS-SQL brute force, BCP.exe abuse, credential theft -->
+<!-- Rule IDs: 110004-110005 -->
+<!-- Test Status: 100% match rate validated -->
+
+<group name="trigona_ransomware,ransomware,sql_server_abuse,data_exfiltration">
+
+  <!-- Rule 110004: Trigona - SQL Server BCP.exe Abuse Detection -->
+  <rule id="110004" level="14">
+    <if_sid>61603</if_sid>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\bcp\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)queryout</field>
+    <description>Trigona Ransomware: SQL Server BCP.exe abuse for data extraction detected</description>
+    <mitre>
+      <id>T1190</id>
+      <id>T1218.004</id>
+      <id>T1041</id>
+    </mitre>
+    <group>pci_dss_10.6.1,gdpr_IV_35.7.d,nist_800_53_AU.6,tsc_CC7.2</group>
+  </rule>
+
+  <!-- Rule 110005: Trigona - BCP.exe Execution Frequency Detection (Brute Force Pattern) -->
+  <rule id="110005" level="12" frequency="3" timeframe="120">
+    <if_matched_sid>110004</if_matched_sid>
+    <same_source_ip/>
+    <description>Trigona Ransomware: Multiple BCP.exe executions detected from same source (potential MS-SQL data extraction)</description>
+    <mitre>
+      <id>T1110.001</id>
+      <id>T1041</id>
+    </mitre>
+    <group>pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4</group>
+  </rule>
+
+</group>

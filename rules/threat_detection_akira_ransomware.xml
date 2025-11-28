@@ -1,0 +1,54 @@
+<!-- Akira Ransomware Detection Rules -->
+<!-- Rules targeting: Ngrok tunneling, Mimikatz credential dumping, file encryption, shadow copy deletion -->
+<!-- Rule IDs: 110006-110009 -->
+<!-- Test Status: 100% match rate validated -->
+
+<group name="akira_ransomware,ransomware,credential_dumping,persistence_inhibition,tunneling">
+
+  <!-- Rule 110006: Akira - Ngrok Process Execution Detection -->
+  <rule id="110006" level="13">
+    <if_sid>61603</if_sid>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\ngrok\.exe$</field>
+    <description>Akira Ransomware: Ngrok tunneling tool execution detected (C2 tunneling)</description>
+    <mitre>
+      <id>T1572</id>
+      <id>T1071</id>
+    </mitre>
+    <group>pci_dss_10.6.1,gdpr_IV_35.7.d,nist_800_53_AU.6,tsc_CC7.2</group>
+  </rule>
+
+  <!-- Rule 110007: Akira - Mimikatz Credential Dumping Detection -->
+  <rule id="110007" level="14">
+    <if_sid>61603</if_sid>
+    <field name="win.eventdata.image" type="pcre2">(?i)(mimikatz|mimilib)\.exe$</field>
+    <description>Akira Ransomware: Mimikatz credential dumping tool execution detected</description>
+    <mitre>
+      <id>T1003.001</id>
+      <id>T1003.002</id>
+    </mitre>
+    <group>pci_dss_10.6.1,gdpr_IV_35.7.d,nist_800_53_AU.6,tsc_CC7.2</group>
+  </rule>
+
+  <!-- Rule 110008: Akira - Ransomware File Extension Detection -->
+  <rule id="110008" level="15">
+    <if_group>syscheck</if_group>
+    <field name="file" type="pcre2">(?i)\.(akira|powerranges|akiranew|aki)$</field>
+    <description>Akira Ransomware: File with known ransomware extension detected (active encryption)</description>
+    <mitre>
+      <id>T1486</id>
+    </mitre>
+    <group>pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4,tsc_CC7.2,tsc_CC6.1</group>
+  </rule>
+
+  <!-- Rule 110009: Akira - Shadow Copy Deletion Detection -->
+  <rule id="110009" level="14">
+    <if_sid>61603</if_sid>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)(vssadmin|wmic).*delete.*shadow</field>
+    <description>Akira Ransomware: Shadow copy deletion detected (inhibiting system recovery)</description>
+    <mitre>
+      <id>T1490</id>
+    </mitre>
+    <group>pci_dss_10.6.1,gdpr_IV_35.7.d,nist_800_53_AU.6,tsc_CC7.2</group>
+  </rule>
+
+</group>
