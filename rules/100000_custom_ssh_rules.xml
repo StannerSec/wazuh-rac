@@ -1,12 +1,12 @@
 <!--
     Custom SSH Detection Rules
-    Rule ID Range: 100000-100099
+    Rule ID Range: 100100-100199
   -->
 
   <group name="ssh,syslog,">
 
     <!-- Rule: SSH brute force attempt -->
-    <rule id="100001" level="10">
+    <rule id="100100" level="10">
       <if_group>syslog</if_group>
       <match>Failed password</match>
       <description>SSH: Multiple failed password attempts (Brute force)</description>
@@ -16,8 +16,8 @@
     </rule>
 
     <!-- Rule: SSH successful login after failures -->
-    <rule id="100002" level="12">
-      <if_sid>100001</if_sid>
+    <rule id="100101" level="12">
+      <if_sid>100100</if_sid>
       <match>Accepted password</match>
       <description>SSH: Successful login after brute force attempts</description>
       <mitre>
@@ -26,7 +26,7 @@
     </rule>
 
     <!-- Rule: SSH login from unusual country -->
-    <rule id="100003" level="8">
+    <rule id="100102" level="8">
       <if_group>syslog</if_group>
       <match>Accepted publickey|Accepted password</match>
       <description>SSH: Successful authentication</description>

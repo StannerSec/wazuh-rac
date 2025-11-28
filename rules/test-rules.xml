@@ -1,0 +1,11 @@
+<group name="syslog,sshd,">
+  <rule id="111101" level="5">
+    <if_sid>111101</if_sid>
+    <match>illegal user|invalid user</match>
+    <description>sshd: Attempt to login using a non-existent user</description>
+    <mitre>
+      <id>T1110</id>
+    </mitre>
+    <group>invalid_login,authentication_failed,pci_dss_10.2.4,pci_dss_10.2.5,pci_dss_10.6.1,gpg13_7.1,gdpr_IV_35.7.d,gdpr_IV_32.2,hipaa_164.312.b,nist_800_53_AU.14,nist_800_53_AC.7,nist_800_53_AU.6,tsc_CC6.1,tsc_CC6.8,tsc_CC7.2,tsc_CC7.3,</group>
+  </rule>
+</group>
