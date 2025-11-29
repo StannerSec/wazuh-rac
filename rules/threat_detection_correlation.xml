@@ -1,0 +1,53 @@
+<!-- Cross-Threat Correlation Rules -->
+<!-- Rules targeting: Attack chains, multi-stage attacks, simultaneous threats from same source -->
+<!-- Rule IDs: 110900-110903 -->
+<!-- Test Status: Ready for deployment -->
+
+<group name="threat_correlation,attack_chain,multi_stage_attack,high_confidence_detection">
+
+  <!-- Rule 110900: Multiple Threat Detection Types from Same Source -->
+  <rule id="110900" level="13" frequency="2" timeframe="300">
+    <if_matched_sid>110001,110002,110013,110014</if_matched_sid>
+    <same_source_ip/>
+    <description>Multiple threat types detected from same source (potential advanced threat or multi-vector attack)</description>
+    <mitre>
+      <id>T1071.001</id>
+    </mitre>
+    <group>pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4</group>
+  </rule>
+
+  <!-- Rule 110901: Rapid File Encryption Detection (Ransomware Attack Confirmation) -->
+  <rule id="110901" level="15" frequency="50" timeframe="60">
+    <if_matched_sid>110008</if_matched_sid>
+    <description>Ransomware Activity Confirmed: Rapid file encryption detected (50+ encrypted files in 60 seconds - active ransomware attack in progress)</description>
+    <mitre>
+      <id>T1486</id>
+    </mitre>
+    <group>pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4</group>
+  </rule>
+
+  <!-- Rule 110902: Credential Dumping + Tunneling = High-Confidence Akira Attack -->
+  <rule id="110902" level="15" frequency="2" timeframe="300">
+    <if_matched_sid>110006,110007</if_matched_sid>
+    <same_source_ip/>
+    <description>High-Confidence Akira Ransomware Attack: Credential dumping tool combined with Ngrok tunneling detected (attack infrastructure setup)</description>
+    <mitre>
+      <id>T1572</id>
+      <id>T1003.001</id>
+    </mitre>
+    <group>pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4</group>
+  </rule>
+
+  <!-- Rule 110903: Credential Dumping + Shadow Deletion = Ransomware Preparation -->
+  <rule id="110903" level="15" frequency="2" timeframe="300">
+    <if_matched_sid>110007,110009</if_matched_sid>
+    <same_source_ip/>
+    <description>High-Confidence Ransomware Preparation: Credential dumping followed by shadow copy deletion detected (blocking recovery options)</description>
+    <mitre>
+      <id>T1003.001</id>
+      <id>T1490</id>
+    </mitre>
+    <group>pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4</group>
+  </rule>
+
+</group>

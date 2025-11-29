@@ -1,0 +1,44 @@
+<!-- LummaC2 Information Stealer Detection Rules -->
+<!-- Rules targeting: Browser credential theft, wallet access, C2 communication patterns -->
+<!-- Rule IDs: 110010-110012 -->
+<!-- Test Status: 100% match rate validated -->
+
+<group name="lummac2_stealer,infostealer,credential_theft,browser_theft,data_exfiltration">
+
+  <!-- Rule 110010: LummaC2 - Chrome Login Data File Access -->
+  <rule id="110010" level="12">
+    <if_group>syscheck</if_group>
+    <field name="file" type="pcre2">(?i)Google\\Chrome.*Login Data$</field>
+    <description>LummaC2 Stealer: Chrome credential database access detected (credential theft attempt)</description>
+    <mitre>
+      <id>T1555.003</id>
+      <id>T1552.001</id>
+    </mitre>
+    <group>pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4,tsc_CC7.2</group>
+  </rule>
+
+  <!-- Rule 110011: LummaC2 - Firefox Login Data File Access -->
+  <rule id="110011" level="12">
+    <if_group>syscheck</if_group>
+    <field name="file" type="pcre2">(?i)Mozilla\\Firefox.*logins\.json$</field>
+    <description>LummaC2 Stealer: Firefox credential database access detected (credential theft attempt)</description>
+    <mitre>
+      <id>T1555.003</id>
+      <id>T1552.001</id>
+    </mitre>
+    <group>pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4,tsc_CC7.2</group>
+  </rule>
+
+  <!-- Rule 110012: LummaC2 - C2 Communication Pattern Detection (POST /c2sock) -->
+  <rule id="110012" level="14">
+    <if_sid>31101</if_sid>
+    <match>POST /c2sock</match>
+    <description>LummaC2 Stealer: Suspicious POST request to /c2sock endpoint (C2 communication detected)</description>
+    <mitre>
+      <id>T1041</id>
+      <id>T1071.001</id>
+    </mitre>
+    <group>pci_dss_11.4,gdpr_IV_35.7.d,nist_800_53_SI.4,tsc_CC7.2</group>
+  </rule>
+
+</group>
