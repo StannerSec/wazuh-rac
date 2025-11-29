@@ -2,10 +2,10 @@
 # Query Wazuh Indexer (OpenSearch) for alerts
 
 INDEXER_URL="https://192.168.0.141:9200"
-INDEXER_USER="${INDEXER_USER:-admin}"
-INDEXER_PASS="${INDEXER_PASS:-admin}"
+INDEXER_USER="${WAZUH_INDEXER_USER:-admin}"
+INDEXER_PASS="${WAZUH_INDEXER_PASS:-admin}"
 
-# Use wildcard index pattern (wazuh-alerts*)
+# Use wildcard pattern to match all alert indices
 INDEX="wazuh-alerts*"
 
 echo "Querying Wazuh Indexer for alerts..."
@@ -16,9 +16,14 @@ case "$1" in
     recent)
         # Get 10 most recent alerts
         echo "=== Recent Alerts ==="
-        curl -s -u "$INDEXER_USER:$INDEXER_PASS" -k -X GET \
-            "$INDEXER_URL/$INDEX/_search?size=10&sort=timestamp:desc" | \
-            jq '.hits.hits[]._source | {timestamp, rule_id: .rule.id, rule_description: .rule.description, agent: .agent.name}'
+        curl -s -u "$INDEXER_USER:$INDEXER_PASS" -k -X POST \
+            "$INDEXER_URL/$INDEX/_search" \
+            -H 'Content-Type: application/json' \
+            -d '{
+              "query": {"match_all": {}},
+              "size": 10,
+              "sort": [{"timestamp": "desc"}]
+            }' | jq '.hits.hits[]._source | {timestamp, rule_id: .rule.id, rule_description: .rule.description, agent: .agent.name}'
         ;;
 
     rule)
