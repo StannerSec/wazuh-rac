@@ -1,0 +1,22 @@
+<!--
+  -  Windows Command Shell Execution Detection - Unit Test
+  -  MITRE ATT&CK T1059.003 - Command and Scripting Interpreter: Windows Command Shell
+  -  Test Rule for Synthetic Log Validation Workflow
+  -  Copyright (C) 2015, Wazuh Inc.
+  -->
+
+<group name="windows,cmd_execution,attack,">
+
+  <!-- Rule 100001: Windows CMD.exe Execution with /c Parameter -->
+  <rule id="100002" level="6">
+    <if_sid>61603</if_sid>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\cmd\.exe$</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)cmd\.exe\s+(/c|/q\s+/c)</field>
+    <description>Windows Command Shell: cmd.exe execution with /c parameter detected (T1059.004)</description>
+    <mitre>
+      <id>T1059.004</id>
+    </mitre>
+    <group>pci_dss_10.6.1,gdpr_IV_35.7.d,nist_800_53_AU.6,tsc_CC7.2</group>
+  </rule>
+
+</group>
