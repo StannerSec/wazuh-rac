@@ -75,15 +75,21 @@ for RULE_FILE in "${RULE_FILES[@]}"; do
         -H "Content-Type: application/octet-stream" \
         --data-binary "@$RULE_FILE")
 
-    # Check upload result
-    UPLOAD_ERROR=$(echo "$RESPONSE" | jq -r '.error')
-    if [ "$UPLOAD_ERROR" != "0" ]; then
-        echo "    ✗ Upload failed: $(echo "$RESPONSE" | jq -r '.message')"
-        FAILED_COUNT=$((FAILED_COUNT + 1))
-    else
-        UPLOADED_FILE=$(echo "$RESPONSE" | jq -r '.data.affected_items[0]')
-        echo "    ✓ Uploaded: $UPLOADED_FILE"
+    # Verify file was actually deployed by checking server status
+    # The API may return an error but still upload the file successfully
+    sleep 1  # Give server time to process the upload
+
+    VERIFY_RESPONSE=$(curl -s -k -X GET "$WAZUH_API/rules/files" \
+        -H "Authorization: Bearer $TOKEN")
+
+    FILE_STATUS=$(echo "$VERIFY_RESPONSE" | jq -r ".data.affected_items[] | select(.filename == \"$FILENAME\") | .status" 2>/dev/null)
+
+    if [ "$FILE_STATUS" == "enabled" ]; then
+        echo "    ✓ Uploaded: $FILENAME (verified on server)"
         UPLOAD_COUNT=$((UPLOAD_COUNT + 1))
+    else
+        echo "    ✗ Upload failed: File not found or not enabled on server"
+        FAILED_COUNT=$((FAILED_COUNT + 1))
     fi
 done
 
